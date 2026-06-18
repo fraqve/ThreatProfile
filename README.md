@@ -49,6 +49,6 @@ Being honest about both kinds here:
 - Python 3
 - Scapy
 
-## A note on how I built this
+## A note on how I will countinue
+Right now I just finsihed the first script of the project to gather data. The next step is building the script to judge it.
 
-I wrote every line of this myself. I used AI as a mentor to ask me questions and push back on my decisions, not to write code for me. If you ask me about any line in here, I can explain why it's there.
