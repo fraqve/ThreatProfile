@@ -1,10 +1,10 @@
-# NetWatch
+# ThreatProfile
 
 A command-line tool I'm building in Python to analyze network traffic from `.pcap` files and flag suspicious behavior. Built entirely with Scapy — no Wireshark, no pre-made analysis libraries. I wanted to actually understand packets at the byte level instead of clicking through a GUI.
 
 ## Why I'm building this
 
-This is my follow-up project to [Aegis-Scan](#). Aegis-Scan was about orchestrating existing tools (nmap, gobuster, nikto). NetWatch is about going one level deeper — actually reading and interpreting raw network traffic myself, instead of relying on other tools to do it for me. I'm working toward a SOC analyst role, and network traffic analysis was a gap I knew I needed to close.
+This is my follow-up project to [Aegis-Scan](#). Aegis-Scan was about orchestrating existing tools (nmap, gobuster, nikto). ThreatProfile is about going one level deeper — actually reading and interpreting raw network traffic myself, instead of relying on other tools to do it for me. I'm working toward a SOC analyst role, and network traffic analysis was a gap I knew I needed to close.
 
 ## How it's organized
 
@@ -41,7 +41,7 @@ Being honest about both kinds here:
 
 - **No handshake tracking.** Detecting a "real" SYN scan means checking if a SYN ever got a SYN-ACK back, which means tracking conversations across multiple packets over time. That's stateful analysis and it's above where my Python is at right now. So instead I detect scans by volume — if one IP hits a ton of unique ports, that's the signal I use.
 - **DNS tunneling detection is basic.** I only catch single DNS queries that are abnormally long. A smarter attacker could split their data across a bunch of smaller queries to stay under my length threshold, and I wouldn't catch that. Catching that pattern would mean tracking query frequency over time, which is the same stateful problem as above.
-- **Fragmented packets aren't fully handled.** Some fragmented packets lose their protocol headers when Scapy parses them, so I can't always tell what protocol they originally belonged to. I scoped this out instead of trying to reassemble fragment streams.
+- **Fragmented packets aren't handled.** Some fragmented packets lose their protocol headers when Scapy parses them, so I can't always tell what protocol they originally belonged to. I scoped this out instead of trying to reassemble fragment streams.
 - **One architectural shortcut I'm not proud of but made on purpose:** the IP-tracking function also initializes the default values for ICMP, TCP, UDP, and DNS keys, just to avoid key errors later. That means the IP function technically "knows about" every other protocol, which isn't great separation of concerns. I didn't have a cleaner solution for this at the time without overengineering something I don't have the Python skills for yet (like a proper plugin-style registration system). It works, but it's something I'd want to redo in a v2.
 
 ## Tech stack
