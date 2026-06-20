@@ -1,10 +1,10 @@
 # ThreatProfile
 
-A command-line tool I'm building in Python to analyze network traffic from `.pcap` files and flag suspicious behavior. Built entirely with Scapy — no Wireshark, no pre-made analysis libraries. I wanted to actually understand packets at the byte level instead of clicking through a GUI.
+A command-line tool I'm building in Python to analyze network traffic from .pcap files and flag suspicious behavior. Built entirely with Scapy — no Wireshark, no pre-made analysis libraries. I wanted to actually understand packets at the byte level instead of clicking through a GUI.
 
 ## Why I'm building this
 
-This is my follow-up project to [Aegis-Scan](#). Aegis-Scan was about orchestrating existing tools (nmap, gobuster, nikto). ThreatProfile is about going one level deeper — actually reading and interpreting raw network traffic myself, instead of relying on other tools to do it for me. I'm working toward a SOC analyst role, and network traffic analysis was a gap I knew I needed to close.
+This is my follow-up project to Aegis-Scan. Aegis-Scan was about orchestrating existing tools (nmap, gobuster, nikto). ThreatProfile is about going one level deeper — actually reading and interpreting raw network traffic myself, instead of relying on other tools to do it for me. I'm working toward a SOC analyst role, and network traffic analysis was a gap I knew I needed to close.
 
 ## How it's organized
 
@@ -12,9 +12,9 @@ Instead of organizing data by protocol, I organize it by IP address. Every IP th
 
 The plan for the full tool is three stages:
 
-1. **Gather data** — parse the pcap and pull out structured info per IP across multiple protocols
-2. **Judge the data** — decide which IPs actually look suspicious, and why
-3. **Enrich it** — check suspicious IPs against VirusTotal and AbuseIPDB for real context
+- **Gather data** — parse the pcap and pull out structured info per IP across multiple protocols
+- **Judge the data** — decide which IPs actually look suspicious, and why
+- **Enrich it** — check suspicious IPs against VirusTotal and AbuseIPDB for real context
 
 ## What's actually working right now
 
@@ -28,10 +28,14 @@ The data gathering part (`analyzer.py`) is done and tested against real pcap fil
 
 Every protocol function follows the same pattern: take the shared data dictionary in, update it, return it. Made it way easier to build each new one once I had the pattern down — ICMP took me an entire afternoon to figure out, TCP took like 20 minutes.
 
+The judgment side (`assess.py`) is in progress now:
+
+- **ICMP assessment** — turns the raw ICMP data into an actual risk score per IP. Ping sweeps and unreachable floods scale in points the further they go past a free threshold, and a detected redirect instantly pushes the score past the flagging threshold on its own, since that's an active attack, not just reconnaissance. Returns the score, a flagged/not-flagged verdict, and a list of which specific behaviors contributed, so the result can actually explain itself instead of just being a number. Note it is not tested yet.
+
 ## What's not built yet
 
-- Deciding what actually counts as "suspicious enough to flag" — like, how many ports scanned is too many? I haven't built that logic yet.
-- Turning the raw data into an actual readable report
+- Judgment logic for TCP, UDP, and DNS — deciding how many ports scanned or how many tunneling attempts is actually suspicious enough to flag
+- Turning the raw data and verdicts into an actual readable report
 - VirusTotal enrichment for flagged IPs
 - AbuseIPDB enrichment for flagged IPs
 
@@ -49,6 +53,6 @@ Being honest about both kinds here:
 - Python 3
 - Scapy
 
-## A note on how I will countinue
-Right now I just finsihed the first script of the project to gather data. The next step is building the script to judge it.
+## Where I'm at
 
+The data gathering script (`analyzer.py`) is fully done and tested. I'm now building the judgment script (`assess.py`) that decides which IPs are actually suspicious — ICMP scoring is done, TCP, UDP, and DNS are next.
