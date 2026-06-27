@@ -77,11 +77,13 @@ Each protocol gets:
 ---
 
 ## Known Limitations
-*(stuff I can't do yet because it is above my skill level)*
 
-- **No stateful tracking.** Detecting a "real" SYN scan means checking if a SYN ever actually got a SYN-ACK back, which means tracking conversations across multiple packets over time. That's above where my Python is at right now, so instead I detect scans by volume — if one IP hits a ton of unique well-known ports, that's the signal I use.
+- **No stateful tracking.** Detecting a "real" SYN scan means checking if a SYN ever actually got a SYN-ACK back, which means tracking conversations across multiple packets over time. Because this version focuses on packet-by-packet analysis, it detects scans by volume instead — if one IP hits a ton of unique well-known ports, that's the signal I use.
+
 - **No time-based analysis yet.** Everything in v1 is volume-based. A slow, low-and-slow scan spread out over hours would look like normal traffic to this tool right now. Time-based detection is a v2 target.
+
 - **DNS tunneling detection is basic.** I only catch single DNS queries that are abnormally long on their own. A smarter attacker could split their data across a bunch of smaller queries to stay under my length threshold, and I wouldn't catch that. Catching that pattern means tracking query frequency over time, which is the same stateful problem as above.
+
 - **Fragmented packets aren't handled.** Some fragmented packets lose their protocol headers when Scapy parses them, so I can't always tell what protocol they originally belonged to. I scoped this out instead of trying to reassemble fragment streams.
 
 ---
