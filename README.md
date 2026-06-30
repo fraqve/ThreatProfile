@@ -83,3 +83,15 @@ The report prints to terminal and saves as `report_your_capture.txt` in the same
 **Basic DNS tunneling detection.** I only catch single queries that are abnormally long on their own. An attacker splitting data across many smaller queries stays under the threshold. Catching that requires stateful frequency tracking — same problem as above.
 
 **Fragmented packets aren't handled.** Scapy loses protocol headers on some fragmented packets, making attribution impossible without stream reassembly. Scoped out for v1.
+
+## Demo
+
+**Attack traffic detected:**
+![Attack detected](screenshots/demo_attack_detected.png)
+
+*ThreatProfile flagging a host conducting an ICMP ping sweep, redirect attack, and TCP port scan — 37 risk points across two protocols.*
+
+**Clean traffic — no flags triggered:**
+![Clean traffic](screenshots/demo_clean_traffic.png)
+
+*Normal DNS and TCP traffic passing through with zero flags — confirming the tool doesn't generate false positives on legitimate traffic.*
